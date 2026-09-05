@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sondage FA SPP-PATS 29 Septembre</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #003366 0%, #1a5a96 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 51, 102, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #FFFF00 0%, #FFD700 100%);
+            padding: 30px;
+            text-align: center;
+            border-bottom: 4px solid #003366;
+        }
+
+        .header h1 {
+            color: #003366;
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            color: #C41E3A;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .info-banner {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 20px;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #155724;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #003366;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .required {
+            color: #C41E3A;
+        }
+
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #003366;
+            box-shadow: 0 0 0 3px rgba(0, 51, 102, 0.1);
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        input[type="radio"] {
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+            accent-color: #003366;
+        }
+
+        .radio-item label {
+            margin: 0;
+            font-weight: 400;
+            cursor: pointer;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #C41E3A 0%, #a01529 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(196, 30, 58, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .revendications-btn {
+            background: linear-gradient(135deg, #C41E3A 0%, #a01529 100%);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #FFFF00 0%, #FFD700 100%);
+            margin: -30px -30px 20px -30px;
+            padding: 20px 30px;
+            border-bottom: 3px solid #003366;
+        }
+
+        .modal-header h2 {
+            color: #003366;
+            margin: 0;
+        }
+
+        .close-modal {
+            color: #003366;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .close-modal:hover {
+            color: #C41E3A;
+        }
+
+        .revendication {
+            background: #f8f9fa;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid #003366;
+            border-radius: 4px;
+        }
+
+        .revendication h4 {
+            color: #003366;
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+
+        .revendication p {
+            color: #555;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .success-message {
+            display: none;
+            background: #d4edda;
+            border: 2px solid #28a745;
+            color: #155724;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .footer {
+            background: #003366;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 12px;
+            border-top: 3px solid #FFFF00;
+        }
+
+        .loader {
+            display: none;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #003366;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 10px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                border-radius: 0;
+            }
+
+            .header h1 {
+                font-size: 22px;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 20% auto;
+            }
+
+            .radio-group {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- HEADER -->
+    <div class="header">
+        <h1>⚡ SONDAGE FA SPP-PATS</h1>
+        <p>Mobilisation 29 septembre 2026</p>
+    </div>
+
+    <!-- CONTENU PRINCIPAL -->
+    <div class="content">
+        <!-- BANNEAU INFO -->
+        <div class="info-banner">
+            ℹ️ <strong>Adhérents et non-adhérents bienvenue !</strong> C'est un simple recensement de participation. Vos données seront traitées confidentiellement.
+        </div>
+
+        <!-- MESSAGE DE SUCCÈS -->
+        <div class="success-message" id="successMessage">
+            ✅ Merci ! Votre participation a été enregistrée avec succès.
+        </div>
+
+        <!-- BOUTON REVENDICATIONS -->
+        <button class="revendications-btn" onclick="openModal()">
+            📋 Lire nos 5 revendications
+        </button>
+
+        <!-- FORMULAIRE -->
+        <form id="surveyForm">
+            <!-- NOM -->
+            <div class="form-group">
+                <label for="name">Nom <span class="required">*</span></label>
+                <input type="text" id="name" name="name" required placeholder="Votre nom complet">
+            </div>
+
+            <!-- UNITÉ -->
+            <div class="form-group">
+                <label for="unit">Unité (optionnel)</label>
+                <input type="text" id="unit" name="unit" placeholder="Ex: SDIS75, Caserne de Boulogne...">
+            </div>
+
+            <!-- STATUT -->
+            <div class="form-group">
+                <label for="statut">Statut <span class="required">*</span></label>
+                <select id="statut" name="statut" required>
+                    <option value="">-- Sélectionnez --</option>
+                    <option value="Adhérent FA SPP-PATS">Adhérent FA SPP-PATS</option>
+                    <option value="Non adhérent">Non adhérent</option>
+                </select>
+            </div>
+
+            <!-- FONCTION -->
+            <div class="form-group">
+                <label for="fonction">Fonction <span class="required">*</span></label>
+                <select id="fonction" name="fonction" required>
+                    <option value="">-- Sélectionnez --</option>
+                    <option value="SPP">SPP (Sapeur-Pompier Professionnel)</option>
+                    <option value="PATS">PATS (Personnel Administratif, Technique, Spécialisé)</option>
+                    <option value="Autre">Autre</option>
+                </select>
+            </div>
+
+            <!-- PARTICIPATION -->
+            <div class="form-group">
+                <label>Participer au 29 septembre ? <span class="required">*</span></label>
+                <div class="radio-group">
+                    <div class="radio-item">
+                        <input type="radio" id="yes" name="participation" value="Oui" required>
+                        <label for="yes">✅ Oui</label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" id="maybe" name="participation" value="Indécis" required>
+                        <label for="maybe">❓ Indécis</label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" id="no" name="participation" value="Non" required>
+                        <label for="no">❌ Non</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BOUTON ENVOYER -->
+            <button type="submit">✉️ Envoyer ma réponse</button>
+            <div class="loader" id="loader"></div>
+        </form>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <p>🤝 FA SPP-PATS • S'engager à vos côtés, réussir ensemble</p>
+        <p style="margin-top: 8px; font-size: 11px;">29 septembre 2026 • Mobilisation Nationale</p>
+    </div>
+</div>
+
+<!-- MODAL REVENDICATIONS -->
+<div id="revendicationsModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h2>📋 Nos 5 revendications</h2>
+        </div>
+
+        <div class="revendication">
+            <h4>1️⃣ Moyens des SDIS renforcés</h4>
+            <p>Augmentation des budgets et des effectifs pour une meilleure réponse aux urgences sur le terrain.</p>
+        </div>
+
+        <div class="revendication">
+            <h4>2️⃣ Santé et sécurité au travail</h4>
+            <p>Amélioration des conditions de travail, prévention des risques professionnels et accès à des équipements de protection adéquats.</p>
+        </div>
+
+        <div class="revendication">
+            <h4>3️⃣ Reconnaissance de la dangerosité et retraite</h4>
+            <p>Reconnaissance officielle de la dangerosité du métier et amélioration des droits à la retraite pour les professionnels exposés.</p>
+        </div>
+
+        <div class="revendication">
+            <h4>4️⃣ Évolution des carrières SPP</h4>
+            <p>Clarification des parcours professionnels, avancements garantis et égalité de traitement entre les grades.</p>
+        </div>
+
+        <div class="revendication">
+            <h4>5️⃣ Avenir de la sécurité civile</h4>
+            <p>Vision d'avenir pour les services de secours, modernisation des équipements et reconnaissance du rôle essentiel des professionnels.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ⚙️ CONFIGURATION
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz2KtYYJfYL-O59JB0k_OQCFv2hvIbqi1PD1afm3qQv_iG6Q8-6OB8EjSe-Dzgf36G-1A/exec';
+
+    // 📝 MODAL REVENDICATIONS
+    function openModal() {
+        document.getElementById('revendicationsModal').style.display = 'block';
+    }
+
+    function closeModal() {
+        document.getElementById('revendicationsModal').style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+        const modal = document.getElementById('revendicationsModal');
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    }
+
+    // 📤 ENVOYER LES DONNÉES
+    document.getElementById('surveyForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const loader = document.getElementById('loader');
+        loader.style.display = 'block';
+
+        const formData = {
+            name: document.getElementById('name').value,
+            unit: document.getElementById('unit').value || 'Non spécifié',
+            statut: document.getElementById('statut').value,
+            fonction: document.getElementById('fonction').value,
+            participation: document.querySelector('input[name="participation"]:checked').value
+        };
+
+        try {
+            const response = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify(formData),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            loader.style.display = 'none';
+
+            if (response.ok) {
+                // ✅ Succès
+                document.getElementById('successMessage').style.display = 'block';
+                document.getElementById('surveyForm').reset();
+
+                // Masquer le message après 5 secondes
+                setTimeout(() => {
+                    document.getElementById('successMessage').style.display = 'none';
+                }, 5000);
+            } else {
+                alert('❌ Erreur : Les données n\'ont pas pu être envoyées. Vérifiez que l\'URL du script est correcte.');
+            }
+        } catch (error) {
+            loader.style.display = 'none';
+            alert('❌ Erreur de connexion. Assurez-vous que l\'URL du script est correcte.\n\nURL actuelle : ' + SCRIPT_URL);
+            console.error('Erreur:', error);
+        }
+    });
+</script>
+
+</body>
+</html>
