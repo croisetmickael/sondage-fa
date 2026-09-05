@@ -11,7 +11,7 @@ export default async (req, res) => {
   
   const options = {
     hostname: 'script.google.com',
-    path: '/macros/s/AKfycbyqi_fZMvN_zlemNH6osv9hamcTIa1sjGdogtFDHq6Ct4TZE_8PIBs-wP_jztikD8xuIA/exec',
+    path: '/macros/s/AKfycbw_LA5aBybK0mEX49SjKs2rwoAdT9GzSsRins_EUQJ3LiVlfq_U1UALbXfM6kWtcOMpyw/exec',
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
