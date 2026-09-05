@@ -239,6 +239,18 @@
             font-weight: 600;
         }
 
+        .error-message {
+            display: none;
+            background: #f8d7da;
+            border: 2px solid #f5c6cb;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+        }
+
         .footer {
             background: #003366;
             color: white;
@@ -304,6 +316,11 @@
         <!-- MESSAGE DE SUCCÈS -->
         <div class="success-message" id="successMessage">
             ✅ Merci ! Votre participation a été enregistrée avec succès.
+        </div>
+
+        <!-- MESSAGE D'ERREUR -->
+        <div class="error-message" id="errorMessage">
+            ❌ Une erreur s'est produite. Veuillez réessayer.
         </div>
 
         <!-- BOUTON REVENDICATIONS -->
@@ -414,9 +431,6 @@
 </div>
 
 <script>
-    // ⚙️ CONFIGURATION
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz2KtYYJfYL-O59JB0k_OQCFv2hvIbqi1PD1afm3qQv_iG6Q8-6OB8EjSe-Dzgf36G-1A/exec';
-
     // 📝 MODAL REVENDICATIONS
     function openModal() {
         document.getElementById('revendicationsModal').style.display = 'block';
@@ -438,7 +452,12 @@
         e.preventDefault();
 
         const loader = document.getElementById('loader');
+        const successMsg = document.getElementById('successMessage');
+        const errorMsg = document.getElementById('errorMessage');
+
         loader.style.display = 'block';
+        successMsg.style.display = 'none';
+        errorMsg.style.display = 'none';
 
         const formData = {
             name: document.getElementById('name').value,
@@ -449,7 +468,7 @@
         };
 
         try {
-            const response = await fetch(SCRIPT_URL, {
+            const response = await fetch('/api/submit', {
                 method: 'POST',
                 body: JSON.stringify(formData),
                 headers: {
@@ -461,19 +480,19 @@
 
             if (response.ok) {
                 // ✅ Succès
-                document.getElementById('successMessage').style.display = 'block';
+                successMsg.style.display = 'block';
                 document.getElementById('surveyForm').reset();
 
                 // Masquer le message après 5 secondes
                 setTimeout(() => {
-                    document.getElementById('successMessage').style.display = 'none';
+                    successMsg.style.display = 'none';
                 }, 5000);
             } else {
-                alert('❌ Erreur : Les données n\'ont pas pu être envoyées. Vérifiez que l\'URL du script est correcte.');
+                errorMsg.style.display = 'block';
             }
         } catch (error) {
             loader.style.display = 'none';
-            alert('❌ Erreur de connexion. Assurez-vous que l\'URL du script est correcte.\n\nURL actuelle : ' + SCRIPT_URL);
+            errorMsg.style.display = 'block';
             console.error('Erreur:', error);
         }
     });
