@@ -1,4 +1,4 @@
-const https = require('https');
+import https from 'https';
 
 export default async (req, res) => {
   if (req.method !== 'POST') {
@@ -6,7 +6,6 @@ export default async (req, res) => {
   }
 
   const data = req.body;
-  
   const payload = JSON.stringify(data);
   
   const options = {
@@ -21,7 +20,13 @@ export default async (req, res) => {
 
   return new Promise((resolve) => {
     const request = https.request(options, (response) => {
-      resolve(res.status(200).json({ success: true }));
+      let body = '';
+      response.on('data', (chunk) => {
+        body += chunk;
+      });
+      response.on('end', () => {
+        resolve(res.status(200).json({ success: true }));
+      });
     });
 
     request.on('error', (error) => {
