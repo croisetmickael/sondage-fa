@@ -1,35 +1,26 @@
-const https = require('https');
-
 export default async (req, res) => {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const data = req.body;
-  
-  const payload = JSON.stringify(data);
-  
-  const options = {
-    hostname: 'script.google.com',
-    path: '/macros/s/AKfycbxyPVoFhkcKxgAmYUl-NmKXVNbOsYz029tPVoZ-QVo7LGWeKGZ-HIxEqZxmykPnI_fztg/exec',
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Content-Length': payload.length
-    }
-  };
+  try {
+    const data = req.body;
+    
+    const response = await fetch(
+      'https://script.google.com/macros/s/AKfycbwdJhEsbivkgrDomWp4GaRpFN7P3dbJ693M8Q9g0iubwy3ofhsEC4MdgSeraKXDqmZfhw/exec',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+      }
+    );
 
-  return new Promise((resolve) => {
-    const request = https.request(options, (response) => {
-      resolve(res.status(200).json({ success: true }));
-    });
-
-    request.on('error', (error) => {
-      console.error('Error:', error);
-      resolve(res.status(500).json({ success: false, error: error.message }));
-    });
-
-    request.write(payload);
-    request.end();
-  });
+    const result = await response.json();
+    return res.status(200).json({ success: true, data: result });
+  } catch (error) {
+    console.error('Error:', error);
+    return res.status(500).json({ success: false, error: error.message });
+  }
 };
